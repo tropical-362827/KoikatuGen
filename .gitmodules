@@ -1,0 +1,6 @@
+[submodule "KoikatuCharaLoader"]
+	path = KoikatuCharaLoader
+	url = https://github.com/great-majority/KoikatuCharaLoader
+[submodule "KoikatuWebAPI"]
+	path = KoikatuWebAPI
+	url = https://github.com/great-majority/KoikatuWebAPI
