@@ -4,6 +4,11 @@
 現状のところ、VariationalAutoEncoderで生成を行っています。
 また、学習対象とするデータは[コイカツ公式アップローダー](http://up.illusion.jp/koikatu_upload/chara/)にあるMod無しのデータのみとしています(学習の安定性のため)。
 
+## 生成データの例
+![](https://i.imgur.com/rubgXw7.png)
+40epochの学習が終わった状態でのモデルで生成しています。
+他の例は[生成データ一覧](#生成データ一覧)にあります。
+
 ## 実行準備
 ```
 $ git clone https://github.com/tropical-362827/KoikatuGen
@@ -30,3 +35,27 @@ $ python ./vae_generate.py (vae_models内のフォルダ名:"20210222_0328"な�
 ```
 のように指定します。
 服やキャラクター情報などは`default.png`のものが使用されます。(デフォルトではちかりんです😄)
+
+## 生成データ一覧
+- 10epoch
+![](https://i.imgur.com/WvMYDCN.png)
+- 20epoch
+![](https://i.imgur.com/vOVWeli.png)
+- 30epoch
+![](https://i.imgur.com/HZ5GsZO.png)
+- 35epoch
+![](https://i.imgur.com/iLa6gIs.png)
+- 40epoch
+![](https://i.imgur.com/rubgXw7.png)
+- 45epoch
+![](https://i.imgur.com/uLB4qzR.png)
+- 50epoch
+![](https://i.imgur.com/bYMnMfh.png)
+
+見れば分かるように、45epoch及び50epochの生成データではほとんど同じような顔が生成されています。おそらく過学習の問題だと考えられます。
+
+## 使用モジュール
+- [KoikatuCharaLoader](https://github.com/great-majority/KoikatuCharaLoader)
+- [KoikatuWebAPI](https://github.com/great-majority/KoikatuWebAPI)
+
+を使用しています。
