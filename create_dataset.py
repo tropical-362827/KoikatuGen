@@ -171,6 +171,10 @@ def is_int(v):
     except:
         return False
 
+def softmax(x):
+    z = np.exp(x)
+    return z / np.sum(z)
+
 def kkchara_to_vector(kc):
     c = {}
     for k in vector_keys + scalar_keys + categorical_keys:
@@ -209,8 +213,9 @@ def dataframe_to_kkchara(df, kc_origin):
     
     for c in categorical_keys:
         element_keys = df.index[df.index.str.startswith(c)]
-        max_element_key = df[element_keys].idxmax()
-        id = int(max_element_key.split("_")[-1])
+        probs = softmax(df[element_keys].values)
+        choice_key = np.random.choice(element_keys, p=probs)
+        id = int(choice_key.split("_")[-1])
         values_apply(c, id)
     
     return kc_origin
