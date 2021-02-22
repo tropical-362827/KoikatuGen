@@ -38,21 +38,25 @@ $ python ./vae_generate.py (vae_models内のフォルダ名:"20210222_0328"な�
 
 ## 生成データ一覧
 - 10epoch
-![](https://i.imgur.com/WvMYDCN.png)
+![](https://i.imgur.com/cqoVZBf.png)
 - 20epoch
-![](https://i.imgur.com/vOVWeli.png)
+![](https://i.imgur.com/JZTIaF2.png)
 - 30epoch
-![](https://i.imgur.com/HZ5GsZO.png)
-- 35epoch
-![](https://i.imgur.com/iLa6gIs.png)
+![](https://i.imgur.com/v15ZKoA.png)
 - 40epoch
-![](https://i.imgur.com/rubgXw7.png)
-- 45epoch
-![](https://i.imgur.com/uLB4qzR.png)
+![](https://i.imgur.com/oG7VA1R.png)
 - 50epoch
-![](https://i.imgur.com/bYMnMfh.png)
-
-見れば分かるように、45epoch及び50epochの生成データではほとんど同じような顔が生成されています。おそらく過学習の問題だと考えられます。
+![](https://i.imgur.com/y1CMgPO.png)
+- 60epoch
+![](https://i.imgur.com/z2G5VMp.png)
+- 70epoch
+![](https://i.imgur.com/U9duOlA.png)
+- 80epoch
+![](https://i.imgur.com/rSNlv5g.png)
+- 90epoch
+![](https://i.imgur.com/vxxCdqI.png)
+- 100epoch
+![](https://i.imgur.com/i47jVO9.png)
 
 ## 使用モジュール
 - [KoikatuCharaLoader](https://github.com/great-majority/KoikatuCharaLoader)
