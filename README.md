@@ -5,8 +5,8 @@
 また、学習対象とするデータは[コイカツ公式アップローダー](http://up.illusion.jp/koikatu_upload/chara/)にあるMod無しのデータのみとしています(学習の安定性のため)。
 
 ## 生成データの例
-![](https://i.imgur.com/rubgXw7.png)
-40epochの学習が終わった状態でのモデルで生成しています。
+![](https://i.imgur.com/vxxCdqI.png)
+90epochの学習が終わった状態でのモデルで生成しています。
 他の例は[生成データ一覧](#生成データ一覧)にあります。
 
 ## 実行準備
