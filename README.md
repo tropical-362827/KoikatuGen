@@ -4,6 +4,9 @@
 現状のところ、VariationalAutoEncoderで生成を行っています。
 また、学習対象とするデータは[コイカツ公式アップローダー](http://up.illusion.jp/koikatu_upload/chara/)にあるMod無しのデータのみとしています(学習の安定性のため)。
 
+## ゲーム中から呼び出すMOD
+このプログラムで得られた学習モデルを使ってゲーム中からキャラクターを生成するMOD、[KoikatuGen-Plugin](https://github.com/tropical-362827/KoikatuGen-Plugin)を作りました。
+
 ## 生成データの例
 ![](https://i.imgur.com/vxxCdqI.png)
 90epochの学習が終わった状態でのモデルで生成しています。
