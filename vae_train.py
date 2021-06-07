@@ -13,6 +13,7 @@ import pandas as pd
 import numpy as np
 import tensorflow as tf
 import datetime
+import json
 
 physical_devices = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
@@ -108,19 +109,31 @@ def main():
     dirpath = os.path.join("./vae_models", t)
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
+        os.makedirs(os.path.join(dirpath, "weights"))
+        os.makedirs(os.path.join(dirpath, "models"))
 
     def save_model(epoch, logs):
         if epoch % 5 != 0:
             return
         
         filename = "{:03}_%s.%s".format(epoch)
-        filepath = os.path.join(dirpath, filename)
+        filepath = os.path.join(dirpath, "models", filename)
         with open(filepath % ("encoder", "json"), "w+") as f:
             f.write(encoder.to_json(indent=2))
         with open(filepath % ("decoder", "json"), "w+") as f:
             f.write(decoder.to_json(indent=2))
         encoder.save_weights(filepath % ("encoder", "h5"))
         decoder.save_weights(filepath % ("decoder", "h5"))
+
+        filename = "{:03}.json".format(epoch)
+        filepath = os.path.join(dirpath, "weights", filename)
+        with open(filepath, "w+") as f:
+            w, b = decoder.layers[3].get_weights()
+            layer_params = {
+                "weights": w.tolist(),
+                "bias": b.tolist()
+            }
+            json.dump(layer_params, f, indent=2)
 
     save_model_callback = LambdaCallback(on_epoch_end=save_model)
 
