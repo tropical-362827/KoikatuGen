@@ -6,6 +6,7 @@
 
 ## ゲーム中から呼び出すMOD
 このプログラムで得られた学習モデルを使ってゲーム中からキャラクターを生成するMOD、[KoikatuGen-Plugin](https://github.com/tropical-362827/KoikatuGen-Plugin)を作りました。
+学習パラメータを使用する方法は[KoikatuGen-PluginのREADME.md](https://github.com/tropical-362827/KoikatuGen-Plugin#koikatugen%E3%81%A7%E5%AD%A6%E7%BF%92%E3%81%97%E3%81%9F%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E4%BD%BF%E3%81%86--using-parameters-trained-by-koikatugen)に記載してあります。
 
 ## 生成データの例
 ![](https://i.imgur.com/vxxCdqI.png)
