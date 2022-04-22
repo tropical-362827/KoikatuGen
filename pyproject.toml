@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "koikatugen"
+version = "0.1.0"
+description = ""
+authors = ["tropical_362827 <wired.wireless0@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9,<3.11"
+kkloader = "^0.1.5"
+kkwebapi = "^0.1.2"
+numpy = "^1.22.3"
+pandas = "^1.4.2"
+tensorflow = "^2.8.0"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+flake8 = "^4.0.1"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
