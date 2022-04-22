@@ -1,6 +1,0 @@
-numpy
-pandas
-sklearn
-requests
-msgpack
-tensorflow==2.1.0
