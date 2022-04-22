@@ -92,7 +92,7 @@ class VariationalAutoEncoder:
 
 
 def main():
-    df = pd.read_csv("./kk_charas.csv", index_col=0)
+    df = pd.read_csv("./data/kk_charas.csv", index_col=0)
     df = category_to_onehot(df)
     df = df.clip(0, 1)
 

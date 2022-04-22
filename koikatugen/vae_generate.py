@@ -26,7 +26,7 @@ def sampling(args):
     return z_mean + z_sigma * epsilon
 
 
-df = pd.read_csv("./kk_charas.csv", index_col=0)
+df = pd.read_csv("./data/kk_charas.csv", index_col=0)
 df = category_to_onehot(df)
 
 date = args.learned_date
@@ -52,7 +52,7 @@ for epoch in range(0, 100 + 1, 5):
     kc_df = pd.DataFrame(y, columns=df.columns)
     t = datetime.datetime.now().strftime("%Y%m%d_%H%M")
     for i, r in kc_df.iterrows():
-        kc = dataframe_to_kkchara(r, KoikatuCharaData.load("./default.png"))
+        kc = dataframe_to_kkchara(r, KoikatuCharaData.load("./data/default.png"))
         kc["Parameter"]["lastname"] = "{:03}_{:03}".format(epoch, i)
         kc["Parameter"]["firstname"] = ""
         kc.save(os.path.join(genpath, "{:03}_{:03}.png".format(epoch, i)))

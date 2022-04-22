@@ -1,9 +1,10 @@
 import argparse
 import json
-from os.path import join
-import numpy as np
 import os.path
 from glob import glob
+from os.path import join
+
+import numpy as np
 
 parser = argparse.ArgumentParser("convert weight parameters from json to csv.", add_help=False)
 parser.add_argument("folderpath", action="store", type=str, help="path to a parameter folder e.g. './vae_models/20210225_0619'")
@@ -27,5 +28,5 @@ for weight_file in glob(join(json_folder, "*.json")):
     weight = np.array(params["weights"])
     bias = np.array(params["bias"])
 
-    np.savetxt(join(csv_folder, param_folder, f"weight.csv"), weight, fmt="%g", delimiter=", ")
-    np.savetxt(join(csv_folder, param_folder, f"bias.csv"), bias[np.newaxis, :], fmt="%g", delimiter=", ")
+    np.savetxt(join(csv_folder, param_folder, "weight.csv"), weight, fmt="%g", delimiter=", ")
+    np.savetxt(join(csv_folder, param_folder, "bias.csv"), bias[np.newaxis, :], fmt="%g", delimiter=", ")
