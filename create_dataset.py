@@ -1,14 +1,12 @@
-#/usr/bin/env python
-# -*- coding:utf-8 -*-
-
-from KoikatuCharaLoader import KoikatuCharaData
-from KoikatuWebAPI import KoikatuWebAPI
-import pandas as pd
-import numpy as np
 import os
 import sys
-from glob import glob
 
+import numpy as np
+import pandas as pd
+from kkloader.KoikatuCharaData import KoikatuCharaData
+from kkwebapi.KoikatuSunshineWebAPI import KoikatuSunshineWebAPI as kksapi
+
+# fmt: off
 vector_keys = [
     "face_shapeValueFace",
     "face_eyebrowColor",
@@ -163,6 +161,8 @@ categories = [
     [0, 1, 2, 3, 4, 6, 7],
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 200]
 ]
+# fmt: on
+
 
 def is_int(v):
     try:
@@ -171,54 +171,59 @@ def is_int(v):
     except:
         return False
 
+
 def softmax(x):
     z = np.exp(x)
     return z / np.sum(z)
+
 
 def kkchara_to_vector(kc):
     c = {}
     for k in vector_keys + scalar_keys + categorical_keys:
         keys = list(map(lambda x: int(x) if is_int(x) else x, k.split("_")))
         if len(keys) == 2:
-            c[k] = kc.custom[keys[0]][keys[1]]
+            c[k] = kc["Custom"][keys[0]][keys[1]]
         elif len(keys) == 3:
-            c[k] = kc.custom[keys[0]][keys[1]][keys[2]]
+            c[k] = kc["Custom"][keys[0]][keys[1]][keys[2]]
         elif len(keys) == 4:
-            c[k] = kc.custom[keys[0]][keys[1]][keys[2]][keys[3]]
+            c[k] = kc["Custom"][keys[0]][keys[1]][keys[2]][keys[3]]
     return c
 
+
 def category_to_onehot(df):
-    for k,c in zip(categorical_keys, categories):
+    for k, c in zip(categorical_keys, categories):
         df[k] = pd.Categorical(df[k], categories=c)
     df = pd.get_dummies(df, columns=categorical_keys)
     return df
+
 
 def dataframe_to_kkchara(df, kc_origin):
     def values_apply(key, value):
         keys = list(map(lambda x: int(x) if is_int(x) else x, key.split("_")))
         if len(keys) == 2:
-            kc_origin.custom[keys[0]][keys[1]] = value
+            kc_origin["Custom"][keys[0]][keys[1]] = value
         elif len(keys) == 3:
-            kc_origin.custom[keys[0]][keys[1]][keys[2]] = value
+            kc_origin["Custom"][keys[0]][keys[1]][keys[2]] = value
         elif len(keys) == 4:
-            kc_origin.custom[keys[0]][keys[1]][keys[2]][keys[3]] = value
+            kc_origin["Custom"][keys[0]][keys[1]][keys[2]][keys[3]] = value
 
     for s in scalar_keys:
         values_apply(s, df[s].tolist())
-    
+
     for v in vector_keys:
         element_keys = df.index[df.index.str.startswith(v)]
         elements = df[element_keys].values.tolist()
         values_apply(v, elements)
-    
+
     for c in categorical_keys:
         element_keys = df.index[df.index.str.startswith(c)]
         probs = softmax(df[element_keys].values)
         choice_key = np.random.choice(element_keys, p=probs)
         id = int(choice_key.split("_")[-1])
         values_apply(c, id)
-    
+
     return kc_origin
+
 
 def get_dataframe(kcv, ids=None):
     df = pd.DataFrame(index=ids)
@@ -227,15 +232,15 @@ def get_dataframe(kcv, ids=None):
             df[s] = [kcv[s]]
         else:
             df[s] = kcv[s]
-    
+
     for v in vector_keys:
         mat = np.array(kcv[v])
         if mat.ndim == 1:
             mat = mat[np.newaxis, :]
         columns = len(mat[0])
         for i in range(columns):
-            k = "_".join([v,str(i)])
-            df[k] = mat[:,i]
+            k = "_".join([v, str(i)])
+            df[k] = mat[:, i]
 
     for c in categorical_keys:
         if not isinstance(kcv[c], list):
@@ -244,22 +249,27 @@ def get_dataframe(kcv, ids=None):
             df[c] = kcv[c]
     return df
 
+
 def make_dataset():
-    ranking = KoikatuWebAPI.get_ranking()
+    ranking = kksapi.get_charas()
+    ranking = ranking[ranking["sex"] == 1]
+    ranking = ranking[ranking["good"] > 5]
 
     a = {}
     for i in vector_keys + categorical_keys + scalar_keys:
         a[i] = []
 
     ids = []
-    for filepath in sorted(glob("./kk_chara/*.png")):
-        id = int(os.path.splitext(os.path.basename(filepath))[0])
+    for i, (id, row) in enumerate(ranking.iterrows()):
+        id = row["id"]
+        update_count = row["update_count"]
 
-        if not id in ranking["id"].values:
+        filepath = f"./kks_chara/{id:07}_{update_count:03}.png"
+        if not os.path.exists(filepath):
             print("\r\n{} was skipped because that data was deleted from official uploader.".format(filepath))
             continue
 
-        sys.stdout.write("\r"+filepath)
+        sys.stdout.write(f"\r{filepath} [ {i+1} / {len(ranking)} ]")
         try:
             kc = KoikatuCharaData.load(filepath)
         except AssertionError:
@@ -268,8 +278,8 @@ def make_dataset():
         except ValueError:
             print("\r\n{} has extra blockdata.".format(filepath))
             continue
-        
-        if kc.parameter["sex"] != 1:
+
+        if kc["Parameter"]["sex"] != 1:
             print("\r\n{} was skipped. this character is male.".format(filepath))
             continue
 
@@ -278,10 +288,11 @@ def make_dataset():
         c = kkchara_to_vector(kc)
         for k in vector_keys + categorical_keys + scalar_keys:
             a[k].append(c[k])
-    
+
     df = get_dataframe(a, ids)
 
-    df.to_csv("./kk_charas.csv")
+    df.to_csv("./kks_charas.csv")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     make_dataset()
