@@ -14,11 +14,16 @@
 他の例は[生成データ一覧](#生成データ一覧)にあります。
 
 ## 実行準備
+*Python 3.9*とpoetryが実行できる環境が必要です
 ```
 $ git clone https://github.com/tropical-362827/KoikatuGen
-$ git submodule update --init --recursive
-$ pip install -r ./requirements.txt
+$ poetry install
 ```
+上のコマンドでモジュールをインストールしたあと、
+```
+$ poetry run python ./koikatugen/vae_train.py
+```
+のようにプログラムを実行します。
 
 ## create_dataset.py
 
@@ -35,7 +40,7 @@ $ pip install -r ./requirements.txt
 
 学習モデルからキャラクターデータを生成します。プログラムのオプションは
 ```
-$ python ./vae_generate.py (vae_models内のフォルダ名:"20210222_0328"など)
+$ poetry run python ./koikatugen/vae_generate.py (vae_models内のフォルダ名:"20210222_0328"など)
 ```
 のように指定します。
 服やキャラクター情報などは`default.png`のものが使用されます。(デフォルトではちかりんです😄)
