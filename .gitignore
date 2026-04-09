@@ -1,11 +1,12 @@
 *.pyc
 __pycache__/
 .venv/
-uv.lock
 
 # data
-data/raw/
-data/preprocessed/
+data/raw/*
+!data/raw/.gitkeep
+data/preprocessed/*
+!data/preprocessed/.gitkeep
 
 # outputs
 outputs/
