@@ -1,7 +1,6 @@
 *.pyc
 __pycache__/
 .venv/
-uv.lock
 
 # data
 data/raw/*
