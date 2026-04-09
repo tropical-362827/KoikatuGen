@@ -5,6 +5,7 @@ description = ""
 authors = [{ name = "tropical_362827", email = "wired.wireless0@gmail.com" }]
 requires-python = ">=3.12"
 dependencies = [
+    "huggingface-hub>=1.9.2",
     "kkloader>=0.1.20",
     "numpy>=2.0",
     "pandas>=2.2.2,<3",

@@ -54,16 +54,27 @@ $ make init
 
 ## Makefileの使い方
 
-### 1. データセット作成
+### 1. データの用意
 
-`data/raw/kk_chara/` 内のキャラクターPNGをベクトル化し、`data/preprocessed/kk_charas.parquet` に出力します。
+#### 前処理済みデータのダウンロード
+
+[Hugging Face](https://huggingface.co/datasets/tropical-362827/KoikatuGen) から前処理済みデータを取得します。
+
+```
+$ make pull-preprocessed
+```
+
+#### 生データのキャラデータからデータセット作成
+
+`data/raw/kk_chara/` にキャラクターPNGを配置した上で実行します。
+ベクトル化したデータを `data/preprocessed/kk_charas.parquet` に出力します。
 スキップされたファイルの理由は `kk_charas_skipped.json` に記録されます。
 
 ```
 $ make create_dataset
 ```
 
-### 2. 学習
+### 3. 学習
 
 `kk_charas.parquet` を使ってVAEを学習します。チェックポイントは `outputs/vae/{timestamp}/` に5epoch毎に保存されます。
 
@@ -71,7 +82,7 @@ $ make create_dataset
 $ make train_vae
 ```
 
-### 3. 生成
+### 4. 生成
 
 学習済みチェックポイントからキャラクターを生成します。
 

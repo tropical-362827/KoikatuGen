@@ -1,4 +1,6 @@
-.PHONY: init format create_dataset train_vae generate_vae
+.PHONY: init format pull-preprocessed create_dataset train_vae generate_vae
+
+HF_REPO := tropical-362827/KoikatuGen
 
 init:
 	uv sync
@@ -6,6 +8,10 @@ init:
 format:
 	uv run ruff format .
 	uv run ruff check --fix .
+
+pull-preprocessed:
+	uv run hf download --repo-type dataset $(HF_REPO) \
+		kk_charas.parquet --local-dir data/preprocessed/
 
 create_dataset:
 	uv run python -m koikatugen.scripts.create_dataset
