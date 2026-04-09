@@ -1,4 +1,4 @@
-.PHONY: init format pull-preprocessed create_dataset train_vae generate_vae
+.PHONY: init format pull-preprocessed create_dataset train_vae generate_vae train_ctgan generate_ctgan
 
 HF_REPO := tropical-362827/KoikatuGen
 
@@ -21,3 +21,9 @@ train_vae:
 
 generate_vae:
 	uv run python -m koikatugen.scripts.generate_vae --checkpoint $(CHECKPOINT)
+
+train_ctgan:
+	uv run python -m koikatugen.scripts.train_ctgan
+
+generate_ctgan:
+	uv run python -m koikatugen.scripts.generate_ctgan --checkpoint $(CHECKPOINT)

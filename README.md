@@ -1,8 +1,13 @@
 # KoikatuGen
 
 このプログラムは[コイカツ](http://www.illusion.jp/preview/koikatu/)のキャラクターデータを学習し、キャラクターのランダム生成を可能とすることを目的としています。
-現状のところ、VariationalAutoEncoderで生成を行っています。
-また、学習対象とするデータは[コイカツ公式アップローダー](http://up.illusion.jp/koikatu_upload/chara/)にあるMod無しのデータのみとしています(学習の安定性のため)。
+
+現状のところ、
+
+- Variational Autoencoder
+- CTGAN
+
+で生成を行っています。
 
 ↓このプログラムでやっていることの解説をQiitaにて行っています！
 
@@ -13,6 +18,8 @@
 学習パラメータを使用する方法は[KoikatuGen-PluginのREADME.md](https://github.com/tropical-362827/KoikatuGen-Plugin#koikatugen%E3%81%A7%E5%AD%A6%E7%BF%92%E3%81%97%E3%81%9F%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E4%BD%BF%E3%81%86--using-parameters-trained-by-koikatugen)に記載してあります。
 
 ## 生成データの例
+
+### Variational Autoencoder
 ![](https://i.imgur.com/vxxCdqI.png)
 90epochの学習が終わった状態でのモデルで生成しています。
 他の例は[生成データ一覧](#生成データ一覧)にあります。
@@ -37,9 +44,13 @@ KoikatuGen/
 │   └── scripts/
 │       ├── create_dataset.py # PNGキャラデータからデータセット作成
 │       ├── train_vae.py      # VAEで学習する
-│       └── generate_vae.py   # VAEで生成
+│       ├── generate_vae.py   # VAEで生成
+│       ├── train_ctgan.py    # CTGANで学習する
+│       └── generate_ctgan.py # CTGANで生成
 └── outputs/
     └── vae/
+        └── {timestamp}/     # チェックポイント・生成結果
+    └── ctgan/
         └── {timestamp}/     # チェックポイント・生成結果
 ```
 
@@ -64,7 +75,7 @@ $ make init
 $ make pull-preprocessed
 ```
 
-#### 生データのキャラデータからデータセット作成
+#### 生のキャラデータからデータセット作成(Optional)
 
 `data/raw/kk_chara/` にキャラクターPNGを配置した上で実行します。
 ベクトル化したデータを `data/preprocessed/kk_charas.parquet` に出力します。
@@ -74,26 +85,57 @@ $ make pull-preprocessed
 $ make create_dataset
 ```
 
-### 3. 学習
+あるいは、別の場所にあるデータから作成:
 
-`kk_charas.parquet` を使ってVAEを学習します。チェックポイントは `outputs/vae/{timestamp}/` に5epoch毎に保存されます。
+```
+$ uv run python -m koikatugen.scripts.create_dataset \
+            --chara-dir /path/to/chara-data \
+            --out-parquet /path/to/preprocessed.parquet
+```
+
+### 2. 学習
+
+デフォルトでは `kk_charas.parquet` を使って学習します。チェックポイントは `outputs/{model}/{timestamp}/` に5epoch毎に保存されます。
 
 ```
 $ make train_vae
+$ make train_ctgan
 ```
 
-### 4. 生成
+あるいは、自分で作成したデータを学習:
+```
+$ uv run python -m koikatugen.scripts.train_vae \
+            --parquet /path/to/preprocessed.parquet
+```
+
+#### CTGANで学習
+
+`kk_charas.parquet` を使ってCTGANを学習します。チェックポイントは 5 epoch ごとに `outputs/ctgan/{timestamp}/epoch_XXX.pkl`、最終モデルは `outputs/ctgan/{timestamp}/model.pkl` に保存されます。
+
+```
+$ make train_ctgan
+```
+
+### 3. 生成
 
 学習済みチェックポイントからキャラクターを生成します。
 
 ```
 $ make generate_vae CHECKPOINT=outputs/vae/{timestamp}/epoch_100.pth
+$ make generate_ctgan CHECKPOINT=outputs/ctgan/{timestamp}/model.pkl
 ```
 
-生成されたPNGは `outputs/vae/{timestamp}/generated/` に出力されます。
+生成されたPNGは `outputs/{model}/{timestamp}/generated/` に出力されます。
 服やキャラクター情報は `data/templates/default.png` のものが使用されます。
 
+生成されたPNGは `outputs/ctgan/{timestamp}/generated/` に出力されます。
+
 ## 生成データ一覧
+
+### Variational Autoencoder
+<details>
+<summary>開く</summary>
+
 - 10epoch
 ![](https://i.imgur.com/cqoVZBf.png)
 - 20epoch
@@ -114,6 +156,8 @@ $ make generate_vae CHECKPOINT=outputs/vae/{timestamp}/epoch_100.pth
 ![](https://i.imgur.com/vxxCdqI.png)
 - 100epoch
 ![](https://i.imgur.com/i47jVO9.png)
+
+</details>
 
 ## 使用ライブラリ
 
