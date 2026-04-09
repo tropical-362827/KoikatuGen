@@ -1,2 +1,12 @@
-kk_charas.csv
 *.pyc
+__pycache__/
+.venv/
+uv.lock
+
+# data
+data/raw/
+data/preprocessed/
+
+# outputs
+outputs/
+!outputs/vae/.gitkeep
