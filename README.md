@@ -22,24 +22,22 @@
 ```
 KoikatuGen/
 ├── data/
-│   ├── raw/
-│   │   └── kk_chara/        # キャラクターPNGファイル（学習データ）
+│   ├── raw/                  # キャラクターPNGファイルを置くディレクトリ
 │   ├── preprocessed/
-│   │   ├── kk_charas.parquet
-│   │   └── kk_charas_skipped.json
+│   │   └── kk_charas.parquet # 前処理済みデータ
 │   └── templates/
-│       └── default.png      # 生成時のテンプレートキャラ
+│       └── default.png       # 生成時のテンプレートキャラ
 ├── koikatugen/
 │   ├── dataset/
-│   │   ├── loader.py        # データセット作成
-│   │   ├── transforms.py    # one-hot変換・逆変換
-│   │   └── schema.py        # カラム定義
+│   │   ├── loader.py         # データセット作成
+│   │   ├── transforms.py     # キャラデータのベクトル化
+│   │   └── schema.py         # カラム定義
 │   ├── models/
-│   │   └── vae.py           # VAEモデル
+│   │   └── vae.py            # VAEモデル
 │   └── scripts/
-│       ├── create_dataset.py
-│       ├── train_vae.py
-│       └── generate_vae.py
+│       ├── create_dataset.py # PNGキャラデータからデータセット作成
+│       ├── train_vae.py      # VAEで学習する
+│       └── generate_vae.py   # VAEで生成
 └── outputs/
     └── vae/
         └── {timestamp}/     # チェックポイント・生成結果
