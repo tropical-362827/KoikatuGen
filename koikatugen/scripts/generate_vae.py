@@ -7,10 +7,15 @@ from kkloader.KoikatuCharaData import KoikatuCharaData
 
 from koikatugen.dataset.transforms import dataframe_to_kkchara
 from koikatugen.models.vae import VAE
-from koikatugen.scripts.template_utils import load_training_metadata, resolve_template_path
+from koikatugen.scripts.template_utils import (
+    load_training_metadata,
+    resolve_template_path,
+)
 
 
-def generate_vae(feature_columns: list[str], latent_dim: int, args: argparse.Namespace, outdir: str):
+def generate_vae(
+    feature_columns: list[str], latent_dim: int, args: argparse.Namespace, outdir: str
+):
     model = VAE(len(feature_columns), latent_dim)
     model.load_state_dict(
         torch.load(args.checkpoint, map_location="cpu", weights_only=True)
@@ -40,7 +45,9 @@ def main():
     args = parser.parse_args()
     metadata = load_training_metadata(args.checkpoint)
     if metadata is None:
-        raise ValueError("Could not load training metadata from the checkpoint directory.")
+        raise ValueError(
+            "Could not load training metadata from the checkpoint directory."
+        )
     feature_columns = metadata["feature_columns"]
     latent_dim = metadata["latent_dim"]
 
