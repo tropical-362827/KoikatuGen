@@ -6,6 +6,7 @@ import pandas as pd
 from kkloader.KoikatuCharaData import KoikatuCharaData
 
 from koikatugen.dataset.transforms import clip_continuous_columns, dataframe_to_kkchara
+from koikatugen.scripts.template_utils import resolve_template_path
 
 
 def generate_ctgan(args: argparse.Namespace, outdir: str):
@@ -14,16 +15,15 @@ def generate_ctgan(args: argparse.Namespace, outdir: str):
 
     sampled = model.sample(args.n)
     sampled = clip_continuous_columns(pd.DataFrame(sampled))
+    template_path = resolve_template_path(args.checkpoint)
 
     for i, row in sampled.iterrows():
-        kc = dataframe_to_kkchara(
-            row, KoikatuCharaData.load("./data/templates/default.png")
-        )
+        kc = dataframe_to_kkchara(row, KoikatuCharaData.load(template_path))
         kc["Parameter"]["lastname"] = f"{i:03d}"
         kc["Parameter"]["firstname"] = ""
         kc.save(os.path.join(outdir, f"{i:03d}.png"))
 
-    print(f"Generated {args.n} characters to {outdir}")
+    print(f"Generated {args.n} characters to {outdir} using {template_path}")
 
 
 def main():

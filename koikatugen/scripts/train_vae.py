@@ -9,6 +9,8 @@ from tqdm import tqdm
 
 from koikatugen.dataset.transforms import category_to_onehot
 from koikatugen.models.vae import VAE
+from koikatugen.scripts.template_utils import save_training_metadata
+from koikatugen.scripts.training_utils import filter_by_ranking_ratio
 
 
 def train_vae(df: pd.DataFrame, args: argparse.Namespace, outdir: str):
@@ -46,19 +48,39 @@ def train_vae(df: pd.DataFrame, args: argparse.Namespace, outdir: str):
 
 def main():
     parser = argparse.ArgumentParser(description="KoikatuGen VAE trainer")
-    parser.add_argument("--parquet", default="./data/preprocessed/kk_charas.parquet")
+    parser.add_argument("--parquet", default="./data/preprocessed/kks_charas.parquet")
+    parser.add_argument(
+        "--ranking-parquet",
+        default="./data/preprocessed/kks_stat_20230103.parquet",
+    )
+    parser.add_argument(
+        "--ratio-top-k",
+        type=int,
+        default=10000,
+        help="Keep rows whose base ids are in the top-K good/download_1 ranking",
+    )
     parser.add_argument("--latent-dim", type=int, default=800)
     parser.add_argument("--epochs", type=int, default=100)
     parser.add_argument("--batch-size", type=int, default=200)
     args = parser.parse_args()
 
     df = pd.read_parquet(args.parquet)
+    if args.ratio_top_k > 0:
+        df = filter_by_ranking_ratio(df, args.ranking_parquet, args.ratio_top_k)
     df = category_to_onehot(df)
     df = df.clip(0, 1)
 
     t = datetime.datetime.now().strftime("%Y%m%d_%H%M")
     outdir = os.path.join("outputs", "vae", t)
     os.makedirs(outdir, exist_ok=True)
+    save_training_metadata(
+        outdir,
+        args.parquet,
+        extra_metadata={
+            "latent_dim": args.latent_dim,
+            "feature_columns": df.columns.tolist(),
+        },
+    )
 
     train_vae(df, args, outdir)
 
