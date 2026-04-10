@@ -33,7 +33,8 @@ KoikatuGen/
 │   ├── preprocessed/
 │   │   └── kk_charas.parquet # 前処理済みデータ
 │   └── templates/
-│       └── default.png       # 生成時のテンプレートキャラ
+│       ├── kk_default.png    # Koikatu生成時のテンプレートキャラ
+│       └── kks_default.png   # Koikatu Sunshine生成時のテンプレートキャラ
 ├── koikatugen/
 │   ├── dataset/
 │   │   ├── loader.py         # データセット作成
@@ -110,7 +111,7 @@ $ uv run python -m koikatugen.scripts.train_vae \
 
 #### CTGANで学習
 
-`kk_charas.parquet` を使ってCTGANを学習します。チェックポイントは 5 epoch ごとに `outputs/ctgan/{timestamp}/epoch_XXX.pkl`、最終モデルは `outputs/ctgan/{timestamp}/model.pkl` に保存されます。
+`kks_charas.parquet` を使ってCTGANを学習します。モデルは `outputs/ctgan/{timestamp}/model.pkl` に保存されます。
 
 ```
 $ make train_ctgan
@@ -126,7 +127,7 @@ $ make generate_ctgan CHECKPOINT=outputs/ctgan/{timestamp}/model.pkl
 ```
 
 生成されたPNGは `outputs/{model}/{timestamp}/generated/` に出力されます。
-服やキャラクター情報は `data/templates/default.png` のものが使用されます。
+服やキャラクター情報は、学習時に使った parquet の接頭辞に応じて `data/templates/kk_default.png` または `data/templates/kks_default.png` のものが使用されます。
 
 生成されたPNGは `outputs/ctgan/{timestamp}/generated/` に出力されます。
 

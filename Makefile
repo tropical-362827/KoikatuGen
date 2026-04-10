@@ -11,7 +11,10 @@ format:
 
 pull-preprocessed:
 	uv run hf download --repo-type dataset $(HF_REPO) \
-		kk_charas.parquet --local-dir data/preprocessed/
+		kk_charas.parquet \
+		kks_charas.parquet \
+		kks_stat_20230103.parquet \
+		--local-dir data/preprocessed/
 
 create_dataset:
 	uv run python -m koikatugen.scripts.create_dataset
